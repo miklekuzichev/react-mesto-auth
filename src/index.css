@@ -5,6 +5,7 @@
 
 @import url(./blocks/header/header.css);
 @import url(./blocks/header/__logo/header__logo.css);
+@import url(./blocks/header/__sign/header__sign.css);
 
 @import url(./blocks/profile/profile.css);
 @import url(./blocks/profile/__card-user/profile__card-user.css);

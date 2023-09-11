@@ -7,12 +7,13 @@ import AddPlacePopup from './AddPlacePopup';
 import EditAvatarPopup from './EditAvatarPopup';
 import EditProfilePopup from './EditProfilePopup';
 import api from '../utils/api.js';
-import { CurrentUserContext } from '../context/CurrentUserContext.js'
+import { CurrentUserContext } from '../context/CurrentUserContext.js';
 
 function App() {
 
     const [selectedCard, setSelectedCard] = React.useState({});
     //const [name, setName] = React.useState('');
+    const [loggedIn, setLoggedIn] = React.useState(true);
 
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
@@ -132,7 +133,9 @@ function App() {
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
-          <Header />
+          <Header 
+          loggedIn={loggedIn}
+          />
           <Main 
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
