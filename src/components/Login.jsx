@@ -1,44 +1,61 @@
-import useForm from '../hooks/useForm';
+//import useForm from '../hooks/useForm';
+import React, { useState } from "react";
 
-const Login = ({ onLogin }) => {
-  const { enteredValues, errors, handleChange } = useForm({});
+const Login = (props) => {
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!enteredValues.email || !enteredValues.password) {
-      return;
-    }
-    onLogin(enteredValues);
-  };
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  function handleChangeEmail(evt) {
+    setEmail(evt.target.value);
+  }
+  function handleChangePassword(evt) {
+    setPassword(evt.target.value);
+  }
+
+  function handleSubmit(evt) {
+    evt.preventDefault();
+    props.onLogin({ email, password });
+  }
+  //const { enteredValues, errors, handleChange } = useForm({});
+  //const handleSubmit = (event) => {
+  //  event.preventDefault();
+  //  if (!enteredValues.email || !enteredValues.password) {
+  //    return;
+  //  }
+  //  onLogin(enteredValues);
+  //};
 
   return (
     <div className="auth">
       <h2 className="auth__title">Вход</h2>
-      <form className="form auth__form" onSubmit={handleSubmit} noValidate>
-        <input
-          type="email"
-          placeholder="Email"
-          name="email"
-          id="email"
-          autoComplete="email"
-          value={enteredValues.email || ''}
-          onChange={handleChange}
-          required
-        />
-        <span className="auth__error">{errors.email}</span>
-        <input
-          type="password"
-          minLength="8"
-          name="password"
-          id="password"
-          placeholder="Пароль"
-          autoComplete="password"
-          value={enteredValues.password || ''}
-          onChange={handleChange}
-          required
-        />
-        <span className="auth__error">{errors.password}</span>
-        <button type="submit">Войти</button>
+      <form className="auth__form" onSubmit={handleSubmit}>
+        <fieldset className="auth__fieldset">
+          <input
+            className="auth__input"
+            type="email"
+            placeholder="Email"
+            name="email"
+            id="email"
+            autoComplete="email"
+            value={email || ''}
+            onChange={handleChangeEmail}
+            required
+          />
+          <input
+            className="auth__input"
+            type="password"
+            minLength="8"
+            name="password"
+            id="password"
+            placeholder="Пароль"
+            autoComplete="password"
+            value={password || ''}
+            onChange={handleChangePassword}
+            required
+          />
+        </fieldset>
+        <button className="auth__submit" type="submit">Войти</button>
         <span className="auth__login-hint"></span>
       </form>
     </div>

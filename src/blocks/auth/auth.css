@@ -1,0 +1,13 @@
+/* CSS стили для auth */
+
+.auth {
+    margin: auto;
+    margin-top: 60px;
+    min-height: 600px;
+    max-width: 358px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  

@@ -1,0 +1,16 @@
+/* CSS стили для auth__hint */
+
+.auth__hint {
+    text-decoration: none;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: white;
+    transition: opacity .3s;
+  }
+  
+  .auth__hint:hover {
+    opacity: 0.6;
+  }
+  
+  
