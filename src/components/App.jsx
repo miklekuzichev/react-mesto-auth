@@ -23,8 +23,9 @@ function App() {
 
     const [selectedCard, setSelectedCard] = React.useState({});
     //const [name, setName] = React.useState('');
-    const [loggedIn, setLoggedIn] = React.useState(true);
-
+    const [loggedIn, setLoggedIn] = React.useState(false);
+    
+    
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
@@ -37,6 +38,9 @@ function App() {
     const [authorizationEmail, setAuthorizationEmail] = useState('');
     const navigate = useNavigate();
 
+    console.log('loggedIn ', loggedIn);
+    
+    
   React.useEffect(() => {
     //
     // Загрузка готовых карточек и данных о пользователе с сервера
@@ -201,6 +205,7 @@ function App() {
     auth
       .getContent(jwt)
       .then((data) => {
+        console.log('authorizationEmail ', data.data.email);
         setAuthorizationEmail(data.data.email);
         setLoggedIn(true);
         navigate('/');
@@ -226,6 +231,7 @@ function App() {
           <Header 
           loggedIn={loggedIn}
           userEmail={authorizationEmail}
+          onSignOut={handleSignOut}
           />
           <Routes>
             <Route path="/sign-in" element={<Login onLogin={handleAuthorization} />} />
@@ -243,7 +249,7 @@ function App() {
               onCardLike={handleCardLike}
             />}
             />
-            </Routes>
+          </Routes>
 
           <Footer />
           <ImagePopup 
