@@ -4,7 +4,7 @@
   min-width: 320px;
   min-height: 100vh;
   margin: 0 auto;
-  background-color:#000000;
+  background-color: #000000;
   font-family: "Inter", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
@@ -12,4 +12,3 @@
   -moz-text-size-adjust: 100%;
   -ms-text-size-adjust: 100%;
 }
-

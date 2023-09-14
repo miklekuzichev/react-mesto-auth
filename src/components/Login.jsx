@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 
-const Login = ({ onLogin}) => {
-
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const Login = ({ onLogin }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleSubmit = (evt) => {
     evt.preventDefault();
@@ -30,9 +29,8 @@ const Login = ({ onLogin}) => {
             type="email"
             placeholder="Email"
             onChange={handleEmail}
-            value={email || ''}
+            value={email || ""}
             required
-
           />
           <input
             className="auth__input"
@@ -42,11 +40,13 @@ const Login = ({ onLogin}) => {
             placeholder="Пароль"
             minLength="8"
             onChange={handlePassword}
-            value={password || ''}
+            value={password || ""}
             required
           />
         </fieldset>
-        <button className="auth__submit" type="submit">Войти</button>
+        <button className="auth__submit" type="submit">
+          Войти
+        </button>
       </form>
     </div>
   );
