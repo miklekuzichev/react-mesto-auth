@@ -1,9 +1,8 @@
 /* CSS стили для auth__fieldset */
 
-
 .auth__fieldset {
-    border: none;
     margin: 0;
     padding: 0;
+    border: none;
   }
   

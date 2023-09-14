@@ -14,33 +14,25 @@ import ProtectedRoute from './ProtectedRoute';
 import Login from './Login';
 import Register from './Register';
 import InfoTooltip from './InfoTooltip';
-
-
 import * as auth from '../utils/auth';
 
 
 function App() {
 
     const [selectedCard, setSelectedCard] = React.useState({});
-    //const [name, setName] = React.useState('');
     const [loggedIn, setLoggedIn] = React.useState(false);
-    
-    
     const [isEditProfilePopupOpen, setIsEditProfilePopupOpen] = React.useState(false);
     const [isAddPlacePopupOpen, setIsAddPlacePopupOpen] = React.useState(false);
     const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
-
     const [currentUser, setCurrentUser] = React.useState({}); // default value
     const [cards, setCards] = React.useState([]);
-
     const [isRenderLoading, setIsRenderLoading] = React.useState(false);
+    const [userEmail, setUserEmail] = useState('');
 
-    const [authorizationEmail, setAuthorizationEmail] = useState('');
+    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
+    const [isRegistration, setIsRegistration] = useState(false);
     const navigate = useNavigate();
 
-    console.log('loggedIn ', loggedIn);
-    
-    
   React.useEffect(() => {
     //
     // Загрузка готовых карточек и данных о пользователе с сервера
@@ -104,7 +96,6 @@ function App() {
       .finally(() => renderLoading())
     } 
 
-
     const handleEditAvatarClick = () => {
         setIsEditAvatarPopupOpen(true);
     };
@@ -147,75 +138,69 @@ function App() {
         .finally(() => renderLoading())
     };
 
-
     const openInfoTooltip = () => {
       setIsInfoTooltipOpen(true);
     };
 
-    const [isInfoTooltipOpen, setIsInfoTooltipOpen] = useState(false);
-    const [isRegistrationSuccessful, setIsRegistrationSuccessful] =
-    useState(false);
 
-
-
-    // Регистрация и Авторизация профиля
+// Авторизация пользователя
+//
+ const handleLogin = (data) => {
+    return auth
+      .login(data)
+      .then((data) => {
+        setLoggedIn(true);
+        localStorage.setItem('token', data.token);
+        handleCheckToken();
+        navigate('/');
+      })
+      .catch((err) => {
+        console.log(err);
+        openInfoTooltip();
+      });
+  };
+    
+// Регистрация пользователя
+//
   const handleRegistration = (data) => {
     return auth
       .register(data)
-      .then((data) => {
-        setIsRegistrationSuccessful(true);
+      .then(() => {
+        setIsRegistration(true);
         openInfoTooltip();
         navigate('/sign-in');
       })
       .catch((err) => {
         console.log(err);
-        setIsRegistrationSuccessful(false);
+        setIsRegistration(false);
         openInfoTooltip();
       });
-  };
-
-  const handleAuthorization = (data) => {
-    return auth
-      .authorize(data)
-      .then((data) => {
-        setLoggedIn(true);
-        localStorage.setItem('jwt', data.token);
-        handleTokenCheck();
-        navigate('/');
-      })
-      .catch((err) => {
-        console.log(err);
-        openInfoTooltip();
-      });
-  };
-
-  // Выход
-  const handleSignOut = () => {
-    setLoggedIn(false);
-    localStorage.removeItem('jwt');
-    navigate('/sign-in');
   };
 
   // Проверка токена
-  const handleTokenCheck = () => {
-    const jwt = localStorage.getItem('jwt');
-    if (!jwt) {
+  //
+  const handleCheckToken = () => {
+    const token = localStorage.getItem('token');
+    if (!token) {
       return;
     }
     auth
-      .getContent(jwt)
+      .getContent(token)
       .then((data) => {
-        console.log('authorizationEmail ', data.data.email);
-        setAuthorizationEmail(data.data.email);
         setLoggedIn(true);
+        setUserEmail(data.data.email);
         navigate('/');
       })
-      .catch((err) => console.log(err));
+      .catch(console.error);
   };
 
-  useEffect(() => {
-    handleTokenCheck();
-  }, []);
+  // Разлогинивание юзера
+  //
+  const handleSignOut = () => {
+    setLoggedIn(false);
+    localStorage.removeItem('token');
+    navigate('/sign-in');
+  };
 
   useEffect(() => {
     if (loggedIn) {
@@ -223,18 +208,20 @@ function App() {
     }
   }, [loggedIn]);
 
-
+  useEffect(() => {
+    handleCheckToken();
+  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
       <div className="page">
           <Header 
           loggedIn={loggedIn}
-          userEmail={authorizationEmail}
+          userEmail={userEmail}
           onSignOut={handleSignOut}
           />
           <Routes>
-            <Route path="/sign-in" element={<Login onLogin={handleAuthorization} />} />
+            <Route path="/sign-in" element={<Login onLogin={handleLogin} />} />
             <Route path="/sign-up" element={<Register onRegister={handleRegistration} />} />  
             <Route path="/" 
               element={<ProtectedRoute
@@ -250,15 +237,21 @@ function App() {
             />}
             />
           </Routes>
-
           <Footer />
+
+          <InfoTooltip
+            isSuccess={isRegistration}
+            onClose={closeAllPopups}
+            isOpen={isInfoTooltipOpen}
+          />
+
           <ImagePopup 
-          card={selectedCard}
-          onClose={closeAllPopups}
+            card={selectedCard}
+            onClose={closeAllPopups}
           />
 
           <AddPlacePopup
-          isOpen={isAddPlacePopupOpen}
+            isOpen={isAddPlacePopupOpen}
             onClose={closeAllPopups}
             name={'type_add'}
             onAddPlace={handleAddPlaceSubmit}
@@ -279,12 +272,6 @@ function App() {
             name={'type_edit'}
             onUpdateUser={handleUpdateUser}
             isRenderLoading={isRenderLoading}
-          />
-
-          <InfoTooltip
-            onClose={closeAllPopups}
-            isOpen={isInfoTooltipOpen}
-            isSuccess={isRegistrationSuccessful}
           />
       </div>
     </CurrentUserContext.Provider>

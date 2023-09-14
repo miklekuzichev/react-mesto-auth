@@ -1,30 +1,22 @@
-//import useForm from '../hooks/useForm';
 import React, { useState } from "react";
 
-const Login = (props) => {
+const Login = ({ onLogin}) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleChangeEmail(evt) {
-    setEmail(evt.target.value);
-  }
-  function handleChangePassword(evt) {
-    setPassword(evt.target.value);
-  }
-
-  function handleSubmit(evt) {
+  const handleSubmit = (evt) => {
     evt.preventDefault();
-    props.onLogin({ email, password });
-  }
-  //const { enteredValues, errors, handleChange } = useForm({});
-  //const handleSubmit = (event) => {
-  //  event.preventDefault();
-  //  if (!enteredValues.email || !enteredValues.password) {
-  //    return;
-  //  }
-  //  onLogin(enteredValues);
-  //};
+    onLogin({ email, password });
+  };
+
+  const handleEmail = (evt) => {
+    setEmail(evt.target.value);
+  };
+
+  const handlePassword = (evt) => {
+    setPassword(evt.target.value);
+  };
 
   return (
     <div className="auth">
@@ -33,30 +25,28 @@ const Login = (props) => {
         <fieldset className="auth__fieldset">
           <input
             className="auth__input"
-            type="email"
-            placeholder="Email"
             name="email"
             id="email"
-            autoComplete="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleEmail}
             value={email || ''}
-            onChange={handleChangeEmail}
             required
+
           />
           <input
             className="auth__input"
-            type="password"
-            minLength="8"
             name="password"
             id="password"
+            type="password"
             placeholder="Пароль"
-            autoComplete="password"
+            minLength="8"
+            onChange={handlePassword}
             value={password || ''}
-            onChange={handleChangePassword}
             required
           />
         </fieldset>
         <button className="auth__submit" type="submit">Войти</button>
-        <span className="auth__login-hint"></span>
       </form>
     </div>
   );

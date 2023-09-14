@@ -1,31 +1,23 @@
 import { Link } from "react-router-dom";
 import React, { useState } from "react";
 
-//import useForm from '../hooks/useForm';
-
-const Register = (props) => {
+const Register = ({ onRegister }) => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  function handleChangeEmail(evt) {
-    setEmail(evt.target.value);
-  }
-  function handleChangePassword(evt) {
-    setPassword(evt.target.value);
-  }
-
-  function handleSubmit(evt) {
+  const handleSubmit = (evt) => {
     evt.preventDefault();
-    props.onRegister({ email, password });
-  }
+    onRegister({ email, password });
+  };
 
-  //const { enteredValues, errors, handleChange } = useForm();
+  const handleEmail = (evt) => {
+    setEmail(evt.target.value);
+  };
 
-  //const handleSubmit = (event) => {
-  //  event.preventDefault();
-  //  onRegister(enteredValues);
-  //};
+  const handlePassword = (evt) => {
+    setPassword(evt.target.value);
+  };
 
   return (
     <>
@@ -35,25 +27,23 @@ const Register = (props) => {
         <fieldset className="auth__fieldset">
           <input
             className="auth__input"
-            id="email"
             name="email"
+            id="email"
             type="email"
             placeholder="Email"
-            autoComplete="email"
+            onChange={handleEmail}
             value={email}
-            onChange={handleChangeEmail}
             required
           />
           <input
             className="auth__input"
-            id="password"
             name="password"
+            id="password"
             type="password"
             minLength="8"
             placeholder="Пароль"
-            autoComplete="password"
+            onChange={handlePassword}
             value={password}
-            onChange={handleChangePassword}
             required
           />
           </fieldset>
