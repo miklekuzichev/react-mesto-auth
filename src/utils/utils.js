@@ -1,3 +1,5 @@
+export const BASE_URL = "https://api.miklekuzichev.mesto.nomoredomainsrocks.ru"; //Базовый URL
+
 //
 // Функция отображения ошибок и отображения текста кнопки сабмита
 //

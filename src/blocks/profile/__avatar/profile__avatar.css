@@ -8,6 +8,8 @@
   border: none;
   border-radius: 50%;
   background-position: center;
+  background-size: contain;
+  object-fit: cover;
   box-shadow: 0;
   transition: 0.3s linear;
 }

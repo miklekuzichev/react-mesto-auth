@@ -46,7 +46,7 @@ function Main({
         ></button>
       </section>
       <section className="cards" aria-label="Галерея картинок">
-        {cards.map((card) => {
+        {cards.map(card => {
           return (
             <Card
               key={card._id}

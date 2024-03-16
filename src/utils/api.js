@@ -1,3 +1,5 @@
+import { BASE_URL } from "./utils";
+
 //
 // Класс взаимодействия с сервером
 //
@@ -26,7 +28,9 @@ class Api {
   // Метод получения картинок с сервера
   //
   getInitialCards() {
-    return this._request("cards", { headers: this._headers });
+    return this._request("cards", { 
+      headers: this._headers}
+    );
   }
   //
   // Метод изменения аватара пользователя
@@ -42,7 +46,10 @@ class Api {
   // Метод получения информации о пользователе
   //
   getUserInfo() {
-    return this._request("users/me", { headers: this._headers });
+    return this._request("users/me", {
+      credentials: "include",
+      headers: this._headers,
+    });
   }
   //
   // Метод загрузки новой карточки на сервер
@@ -55,7 +62,7 @@ class Api {
     });
   }
   //
-  // Метод Изменения информации о пользователе
+  // Метод изменения информации о пользователе
   //
   editUserInfo(data) {
     return this._request("users/me", {
@@ -89,20 +96,24 @@ class Api {
     return this._request(`cards/${cardId}/likes`, {
       method: "DELETE",
       headers: this._headers,
-    });
+      },
+    );
   }
+
+  setToken(jwt) {
+    this._headers.Authorization = `Bearer ${jwt}`;
+  }
+
 }
 //
 // Создаем экземпляр класса Api
 //
-const baseUrl = "https://mesto.nomoreparties.co/v1/cohort-71";
-const authorization = "4d9ffc72-560d-4507-8006-e62ea753eb8d";
-
 const api = new Api({
-  baseUrl: baseUrl,
+  baseUrl: BASE_URL,
   headers: {
-    authorization: authorization,
+    //authorization: authorization,
     "Content-Type": "application/json",
+    "Authorization": `Bearer ${localStorage.getItem("jwt")}`,
   },
 });
 

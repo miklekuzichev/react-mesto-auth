@@ -1,4 +1,4 @@
-export const BASE_URL = " https://auth.nomoreparties.co"; //Базовый URL
+import { BASE_URL } from "./utils";
 
 // Тело запроса
 //
@@ -12,6 +12,7 @@ const headers = {
 export function login(data) {
   return fetch(`${BASE_URL}/signin`, {
     method: "POST",
+    credentials: "include",
     headers,
     body: JSON.stringify(data),
   }).then(handleServerMessage);
@@ -22,6 +23,7 @@ export function login(data) {
 export function register(data) {
   return fetch(`${BASE_URL}/signup`, {
     method: "POST",
+    credentials: "include",
     headers,
     body: JSON.stringify(data),
   }).then(handleServerMessage);
@@ -29,12 +31,12 @@ export function register(data) {
 
 // Получаем токен
 //
-export function getContent(token) {
+export function getContent(jwt) {
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
+      "Authorization": `Bearer ${jwt}`,
     },
   }).then(handleServerMessage);
 }

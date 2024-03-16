@@ -40,8 +40,8 @@ function App() {
     if (loggedIn) {
       Promise.all([api.getInitialCards(), api.getUserInfo()])
         .then(([cards, userData]) => {
-          setCurrentUser(userData);
-          setCards(cards);
+          setCurrentUser(userData.data);
+          setCards(cards.cards);
         })
         .catch(console.error);
     }
@@ -56,7 +56,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some((i) => i._id === currentUser._id); // Проверяем, есть ли уже лайк на этой карточке
+    const isLiked = card.likes.some((i) => i === currentUser._id); // Проверяем, есть ли уже лайк на этой карточке
     // Отправляем запрос в API и получаем обновлённые данные карточки
     if (isLiked) {
       api
@@ -84,7 +84,7 @@ function App() {
     api
       .deleteCard(card._id)
       .then(() => {
-        setCards((cards) => cards.filter((item) => item._id !== card));
+        setCards((cards) => cards.filter((item) => item._id !== card._id));
       })
       .catch(console.error);
     //    .finally(() => renderLoading())
@@ -95,8 +95,8 @@ function App() {
     // Отправляем запрос в API
     api
       .addCard(card)
-      .then((card) => {
-        setCards([card, ...cards]);
+      .then((res) => {
+        setCards([res.card, ...cards]);
         closeAllPopups();
       })
       .catch(console.error)
@@ -157,13 +157,17 @@ function App() {
     return auth
       .login(data)
       .then((res) => {
-        setLoggedIn(true);
-        setUserEmail(data.email);
-        localStorage.setItem("token", res.token);
-        navigate("/");
+        if(res && res._id) {
+          setLoggedIn(true);
+          setUserEmail(data.email);
+          localStorage.setItem("jwt", res._id);
+          api.setToken(res._id);
+          navigate("/");
+        }
       })
       .catch((err) => {
         console.log(err);
+        setIsRegistration(false);
         openInfoTooltip();
       });
   };
@@ -188,38 +192,32 @@ function App() {
   // Проверка токена
   //
   const handleCheckToken = () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
+    const jwt = localStorage.getItem("jwt");
+    if (!jwt) {
       return;
     }
     auth
-      .getContent(token)
+      .getContent(jwt)
       .then((data) => {
         setLoggedIn(true);
-        //console.log('data.email ', data);
         setUserEmail(data.data.email);
         navigate("/");
       })
       .catch(console.error);
   };
+  useEffect(() => {
+    handleCheckToken();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Разлогинивание юзера
   //
   const handleSignOut = () => {
     setLoggedIn(false);
-    localStorage.removeItem("token");
+    localStorage.removeItem("jwt");
+    api.setToken(null);
     navigate("/sign-in");
   };
-
-  useEffect(() => {
-    if (loggedIn) {
-      navigate("/");
-    }
-  }, [loggedIn]);
-
-  useEffect(() => {
-    handleCheckToken();
-  }, []);
 
   return (
     <CurrentUserContext.Provider value={currentUser}>
